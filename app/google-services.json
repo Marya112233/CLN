@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "309747142706",
+    "project_id": "cln-d7aa8",
+    "storage_bucket": "cln-d7aa8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:309747142706:android:60bbccf44b314f17de6c2b",
+        "android_client_info": {
+          "package_name": "com.example.cln"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBI9Qx0Ui_WFAJBOEnTAcKbeT9DUPeZ8ps"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
