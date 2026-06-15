@@ -2,6 +2,7 @@ package com.example.cln;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +13,8 @@ import com.google.firebase.auth.FirebaseUser;
 public class MainActivity extends AppCompatActivity {
 
     TextView welcomeText, navChat, navProfile;
+    LinearLayout resourcesCard, aiCard;
+
     FirebaseAuth auth;
 
     @Override
@@ -24,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
         welcomeText = findViewById(R.id.welcomeText);
         navChat = findViewById(R.id.navChat);
         navProfile = findViewById(R.id.navProfile);
+        resourcesCard = findViewById(R.id.resourcesCard);
+        aiCard = findViewById(R.id.aiCard);
 
         FirebaseUser user = auth.getCurrentUser();
 
@@ -41,12 +46,16 @@ public class MainActivity extends AppCompatActivity {
 
         welcomeText.setText("Welcome, " + name + " 👋");
 
-        navChat.setOnClickListener(v -> {
-            startActivity(new Intent(MainActivity.this, ChatActivity.class));
-        });
+        navChat.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, ChatActivity.class)));
 
-        navProfile.setOnClickListener(v -> {
-            startActivity(new Intent(MainActivity.this, ProfileActivity.class));
-        });
+        navProfile.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, ProfileActivity.class)));
+
+        resourcesCard.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, ProjectsActivity.class)));
+
+        aiCard.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, AiActivity.class)));
     }
 }

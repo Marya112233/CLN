@@ -1,17 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#050711"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:padding="24dp">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/profileTitle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Profile Page"
+        android:text="👤 Profile"
         android:textColor="#FFFFFF"
-        android:textSize="30sp"
-        android:textStyle="bold"/>
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginTop="50dp" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/userIcon"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@id/profileTitle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/circle_white_bg"
+        android:gravity="center"
+        android:text="👤"
+        android:textSize="45sp" />
+
+    <TextView
+        android:id="@+id/userEmailText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/userIcon"
+        android:layout_marginTop="30dp"
+        android:text="Email"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:gravity="center" />
+
+    <Button
+        android:id="@+id/logoutBtn"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_below="@id/userEmailText"
+        android:layout_marginTop="40dp"
+        android:text="LOGOUT"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:backgroundTint="#B13DFF" />
+
+    <Button
+        android:id="@+id/backHomeBtn"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_below="@id/logoutBtn"
+        android:layout_marginTop="15dp"
+        android:text="BACK TO HOME"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:backgroundTint="#1A1F3A" />
+
+</RelativeLayout>

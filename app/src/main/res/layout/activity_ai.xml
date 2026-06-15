@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#050711"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/aiTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="🤖 AI Learning Assistant"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginTop="35dp" />
+
+    <ListView
+        android:id="@+id/aiChatList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/aiTitle"
+        android:layout_above="@id/bottomAiLayout"
+        android:layout_marginTop="20dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="10dp"
+        android:background="#1A1F3A" />
+
+    <LinearLayout
+        android:id="@+id/bottomAiLayout"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/aiQuestionInput"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Ask AI..."
+            android:textColor="#FFFFFF"
+            android:textColorHint="#AAB0C5"
+            android:backgroundTint="#B13DFF"
+            android:singleLine="true" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <Button
+                android:id="@+id/aiSendBtn"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:text="ASK"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:backgroundTint="#B13DFF" />
+
+            <Button
+                android:id="@+id/backHomeBtn"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:text="HOME"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:backgroundTint="#1A1F3A" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

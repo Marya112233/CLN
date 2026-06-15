@@ -1,5 +1,6 @@
 package com.example.cln;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ public class ChatActivity extends AppCompatActivity {
     ListView chatList;
     EditText messageInput;
     Button sendBtn;
+    TextView backHomeBtn;
 
     ArrayList<String> messages;
     ArrayAdapter<String> adapter;
@@ -45,6 +47,7 @@ public class ChatActivity extends AppCompatActivity {
         chatList = findViewById(R.id.chatList);
         messageInput = findViewById(R.id.messageInput);
         sendBtn = findViewById(R.id.sendBtn);
+        backHomeBtn = findViewById(R.id.backHomeBtn);
 
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
@@ -76,7 +79,7 @@ public class ChatActivity extends AppCompatActivity {
                 GradientDrawable bg = new GradientDrawable();
                 bg.setCornerRadius(28);
 
-                if (msg.startsWith(currentEmail)) {
+                if (!currentEmail.isEmpty() && msg.startsWith(currentEmail)) {
                     bg.setColor(Color.parseColor("#7B3FF2"));
                     textView.setGravity(Gravity.END);
                 } else {
@@ -94,6 +97,12 @@ public class ChatActivity extends AppCompatActivity {
         loadMessages();
 
         sendBtn.setOnClickListener(v -> sendMessage());
+
+        backHomeBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(ChatActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        });
     }
 
     private void sendMessage() {
