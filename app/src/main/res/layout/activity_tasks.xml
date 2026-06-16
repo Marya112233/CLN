@@ -1,17 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#050711"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:padding="20dp">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/tasksTitle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Tasks Page"
+        android:text="✅ Tasks Manager"
         android:textColor="#FFFFFF"
-        android:textSize="30sp"
-        android:textStyle="bold"/>
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginTop="30dp"/>
 
-</LinearLayout>
+    <EditText
+        android:id="@+id/taskInput"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/tasksTitle"
+        android:layout_marginTop="20dp"
+        android:hint="Enter Task"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#AAAAAA"
+        android:backgroundTint="#B13DFF"/>
+
+    <Button
+        android:id="@+id/addTaskBtn"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/taskInput"
+        android:layout_marginTop="10dp"
+        android:text="ADD TASK"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#B13DFF"/>
+
+    <ListView
+        android:id="@+id/tasksList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/addTaskBtn"
+        android:layout_above="@id/homeBtn"
+        android:layout_marginTop="15dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="10dp"/>
+
+    <Button
+        android:id="@+id/homeBtn"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:text="HOME"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:backgroundTint="#1A1F3A"/>
+
+</RelativeLayout>

@@ -3,6 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#050711">
+    android:id="@+id/projectActivityCard"
+    android:id="@+id/taskActivityCard"
 
     <ScrollView
         android:layout_width="match_parent"
@@ -307,6 +309,7 @@
                 android:padding="16dp">
 
                 <RelativeLayout
+                    android:id="@+id/projectActivityCard"
                     android:layout_width="match_parent"
                     android:layout_height="55dp">
 
@@ -361,6 +364,7 @@
                     android:background="#26304A" />
 
                 <RelativeLayout
+                    android:id="@+id/taskActivityCard"
                     android:layout_width="match_parent"
                     android:layout_height="55dp">
 

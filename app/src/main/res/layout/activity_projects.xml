@@ -16,20 +16,31 @@
         android:gravity="center"
         android:layout_marginTop="40dp" />
 
+    <EditText
+        android:id="@+id/projectInput"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_below="@id/projectsTitle"
+        android:layout_marginTop="20dp"
+        android:hint="Enter Project Name"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#AAAAAA"
+        android:backgroundTint="#B13DFF" />
+
     <ListView
         android:id="@+id/projectsList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/projectsTitle"
+        android:layout_below="@id/projectInput"
         android:layout_above="@id/bottomButtons"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:divider="@android:color/transparent"
         android:dividerHeight="12dp" />
 
     <LinearLayout
         android:id="@+id/bottomButtons"
         android:layout_width="match_parent"
-        android:layout_height="130dp"
+        android:layout_height="190dp"
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
@@ -43,10 +54,20 @@
             android:backgroundTint="#B13DFF" />
 
         <Button
+            android:id="@+id/uploadProjectBtn"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="10dp"
+            android:text="UPLOAD PROJECT"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:backgroundTint="#7B61FF" />
+
+        <Button
             android:id="@+id/backHomeBtn"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="10dp"
             android:text="BACK TO HOME"
             android:textColor="#FFFFFF"
             android:textStyle="bold"

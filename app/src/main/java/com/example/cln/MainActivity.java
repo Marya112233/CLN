@@ -3,6 +3,7 @@ package com.example.cln;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
 
     TextView welcomeText, navChat, navProfile;
     LinearLayout resourcesCard, aiCard;
+    RelativeLayout projectActivityCard, taskActivityCard;
 
     FirebaseAuth auth;
 
@@ -27,8 +29,12 @@ public class MainActivity extends AppCompatActivity {
         welcomeText = findViewById(R.id.welcomeText);
         navChat = findViewById(R.id.navChat);
         navProfile = findViewById(R.id.navProfile);
+
         resourcesCard = findViewById(R.id.resourcesCard);
         aiCard = findViewById(R.id.aiCard);
+
+        projectActivityCard = findViewById(R.id.projectActivityCard);
+        taskActivityCard = findViewById(R.id.taskActivityCard);
 
         FirebaseUser user = auth.getCurrentUser();
 
@@ -57,5 +63,11 @@ public class MainActivity extends AppCompatActivity {
 
         aiCard.setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, AiActivity.class)));
+
+        projectActivityCard.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, ProjectsActivity.class)));
+
+        taskActivityCard.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, TasksActivity.class)));
     }
 }

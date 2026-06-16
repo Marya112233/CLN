@@ -2,13 +2,17 @@ package com.example.cln;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.concurrent.TimeUnit;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,9 +21,21 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class AiActivity extends AppCompatActivity {
 
@@ -33,6 +49,14 @@ public class AiActivity extends AppCompatActivity {
     FirebaseFirestore db;
     FirebaseAuth auth;
     String currentEmail = "User";
+
+    OkHttpClient client = new OkHttpClient.Builder()
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
+            .build();
+
+    String GEMINI_API_KEY = "AQ.Ab8RN6Jc7JoBq-Zuv2BAYtjBZ3nrxUdOJEhjxniMxPZxHJOHKg";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,18 +80,33 @@ public class AiActivity extends AppCompatActivity {
 
         adapter = new ArrayAdapter<String>(
                 this,
-                android.R.layout.simple_list_item_1,
+                R.layout.chat_message_item,
+                R.id.messageText,
                 aiMessages
         ) {
             @Override
-            public android.view.View getView(int position, android.view.View convertView, android.view.ViewGroup parent) {
-                android.view.View view = super.getView(position, convertView, parent);
-                TextView textView = view.findViewById(android.R.id.text1);
+            public View getView(int position, View convertView, android.view.ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView textView = view.findViewById(R.id.messageText);
+
+                String msg = aiMessages.get(position);
 
                 textView.setTextColor(Color.WHITE);
                 textView.setTextSize(15);
-                textView.setPadding(18, 18, 18, 18);
-                textView.setBackgroundColor(Color.parseColor("#1A1F3A"));
+                textView.setPadding(16, 14, 16, 14);
+
+                GradientDrawable bg = new GradientDrawable();
+                bg.setCornerRadius(30);
+
+                if (msg.startsWith("You:")) {
+                    bg.setColor(Color.parseColor("#B13DFF"));
+                    textView.setGravity(Gravity.END);
+                } else {
+                    bg.setColor(Color.parseColor("#1A1F3A"));
+                    textView.setGravity(Gravity.START);
+                }
+
+                textView.setBackground(bg);
 
                 return view;
             }
@@ -77,7 +116,23 @@ public class AiActivity extends AppCompatActivity {
 
         loadAiMessages();
 
-        aiSendBtn.setOnClickListener(v -> sendAiQuestion());
+        aiSendBtn.setOnClickListener(v -> {
+            String question = aiQuestionInput.getText().toString().trim();
+
+            if (question.isEmpty()) {
+                aiQuestionInput.setError("Type your question");
+                return;
+            }
+
+            aiQuestionInput.setText("");
+
+            aiMessages.add("You:\n" + question);
+            aiMessages.add("AI:\nThinking...");
+            adapter.notifyDataSetChanged();
+            aiChatList.setSelection(aiMessages.size() - 1);
+
+            askGemini(question);
+        });
 
         backHomeBtn.setOnClickListener(v -> {
             startActivity(new Intent(AiActivity.this, MainActivity.class));
@@ -85,32 +140,102 @@ public class AiActivity extends AppCompatActivity {
         });
     }
 
-    private void sendAiQuestion() {
-        String question = aiQuestionInput.getText().toString().trim();
+    private void askGemini(String question) {
+        try {
+            String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 
-        if (question.isEmpty()) {
-            aiQuestionInput.setError("Type your question");
-            return;
+            JSONObject textPart = new JSONObject();
+            textPart.put("text", question);
+
+            JSONArray parts = new JSONArray();
+            parts.put(textPart);
+
+            JSONObject content = new JSONObject();
+            content.put("parts", parts);
+
+            JSONArray contents = new JSONArray();
+            contents.put(content);
+
+            JSONObject bodyJson = new JSONObject();
+            bodyJson.put("contents", contents);
+
+            RequestBody body = RequestBody.create(
+                    bodyJson.toString(),
+                    MediaType.parse("application/json")
+            );
+
+            Request request = new Request.Builder()
+                    .url(url)
+                    .addHeader("x-goog-api-key", GEMINI_API_KEY)
+                    .addHeader("Content-Type", "application/json")
+                    .post(body)
+                    .build();
+
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    runOnUiThread(() ->
+                            replaceThinking("AI:\nConnection failed: " + e.getMessage())
+                    );
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    String responseBody = response.body() != null ? response.body().string() : "";
+
+                    if (!response.isSuccessful()) {
+                        runOnUiThread(() ->
+                                replaceThinking("AI:\nError: " + responseBody)
+                        );
+                        return;
+                    }
+
+                    try {
+                        JSONObject json = new JSONObject(responseBody);
+                        String answer = json
+                                .getJSONArray("candidates")
+                                .getJSONObject(0)
+                                .getJSONObject("content")
+                                .getJSONArray("parts")
+                                .getJSONObject(0)
+                                .getString("text");
+
+                        runOnUiThread(() -> {
+                            replaceThinking("AI:\n" + answer);
+                            saveToFirebase(question, answer);
+                        });
+
+                    } catch (Exception e) {
+                        runOnUiThread(() ->
+                                replaceThinking("AI:\nCould not read AI response.")
+                        );
+                    }
+                }
+            });
+
+        } catch (Exception e) {
+            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void replaceThinking(String aiText) {
+        if (aiMessages.size() > 0) {
+            aiMessages.remove(aiMessages.size() - 1);
         }
 
-        String answer = generateAnswer(question.toLowerCase());
+        aiMessages.add(aiText);
+        adapter.notifyDataSetChanged();
+        aiChatList.setSelection(aiMessages.size() - 1);
+    }
 
+    private void saveToFirebase(String question, String answer) {
         Map<String, Object> data = new HashMap<>();
         data.put("userEmail", currentEmail);
         data.put("question", question);
         data.put("answer", answer);
         data.put("timestamp", System.currentTimeMillis());
 
-        db.collection("ai_questions")
-                .add(data)
-                .addOnSuccessListener(documentReference -> {
-                    aiQuestionInput.setText("");
-                    loadAiMessages();
-                    Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Not saved: " + e.getMessage(), Toast.LENGTH_LONG).show()
-                );
+        db.collection("ai_questions").add(data);
     }
 
     private void loadAiMessages() {
@@ -127,7 +252,8 @@ public class AiActivity extends AppCompatActivity {
                         if (question == null) question = "";
                         if (answer == null) answer = "";
 
-                        aiMessages.add("You:\n" + question + "\n\nAI:\n" + answer);
+                        aiMessages.add("You:\n" + question);
+                        aiMessages.add("AI:\n" + answer);
                     });
 
                     adapter.notifyDataSetChanged();
@@ -135,62 +261,6 @@ public class AiActivity extends AppCompatActivity {
                     if (aiMessages.size() > 0) {
                         aiChatList.setSelection(aiMessages.size() - 1);
                     }
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Load failed: " + e.getMessage(), Toast.LENGTH_LONG).show()
-                );
-    }
-
-    private String generateAnswer(String question) {
-
-        if (question.contains("java")) {
-            return "Java is used in Android development to create application logic, buttons, navigation, and user interaction.";
-        }
-
-        if (question.contains("firebase")) {
-            return "Firebase is a cloud platform used to manage authentication, store data, and connect the application with online services.";
-        }
-
-        if (question.contains("android")) {
-            return "Android is a mobile operating system. In this project, Android Studio is used to design and build the CLN mobile application.";
-        }
-
-        if (question.contains("chat")) {
-            return "The chat feature allows users to communicate, ask questions, and share learning ideas inside the CLN application.";
-        }
-
-        if (question.contains("project")) {
-            return "Projects help users apply what they learn in real practice. They also support collaboration and skill development.";
-        }
-
-        if (question.contains("task")) {
-            return "Tasks help users organize their work into smaller steps, making it easier to complete activities on time.";
-        }
-
-        if (question.contains("profile")) {
-            return "The profile page displays the user's account information and allows the user to log out safely.";
-        }
-
-        if (question.contains("login")) {
-            return "The login page allows registered users to access the CLN application using their email and password.";
-        }
-
-        if (question.contains("register") || question.contains("sign up")) {
-            return "The register page allows new users to create an account before using the application.";
-        }
-
-        if (question.contains("cln")) {
-            return "CLN is a Collaborative Learning and Networking application designed to help students learn, communicate, and manage projects.";
-        }
-
-        if (question.contains("hello") || question.contains("hi")) {
-            return "Hello! I am your CLN AI Learning Assistant. How can I help you today?";
-        }
-
-        if (question.contains("how are you")) {
-            return "I am doing well. I am ready to help you with learning, projects, tasks, and programming questions.";
-        }
-
-        return "This AI Assistant gives simple learning support. It can help with programming, Firebase, Android, projects, tasks, and general study questions.";
+                });
     }
 }
