@@ -52,21 +52,27 @@ public class MainActivity extends AppCompatActivity {
 
         welcomeText.setText("Welcome, " + name + " 👋");
 
+        // Chat
         navChat.setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, ChatActivity.class)));
 
+        // Profile
         navProfile.setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, ProfileActivity.class)));
 
+        // Resources
         resourcesCard.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, ProjectsActivity.class)));
+                startActivity(new Intent(MainActivity.this, ResourcesActivity.class)));
 
+        // AI Assistant
         aiCard.setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, AiActivity.class)));
 
+        // Projects
         projectActivityCard.setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, ProjectsActivity.class)));
 
+        // Tasks
         taskActivityCard.setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, TasksActivity.class)));
     }

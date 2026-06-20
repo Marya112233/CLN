@@ -13,6 +13,8 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:targetApi="31">
 
+        <activity android:name=".ResourcesActivity" />
+
         <activity
             android:name=".AiActivity"
             android:exported="false" />
