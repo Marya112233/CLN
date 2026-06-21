@@ -56,7 +56,7 @@ public class AiActivity extends AppCompatActivity {
             .writeTimeout(60, TimeUnit.SECONDS)
             .build();
 
-    String GEMINI_API_KEY = "AQ.Ab8RN6Jc7JoBq-Zuv2BAYtjBZ3nrxUdOJEhjxniMxPZxHJOHKg";
+    String GEMINI_API_KEY = "PASTE_YOUR_API_KEY_HERE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
